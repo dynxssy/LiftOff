@@ -73,7 +73,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
 <header>
   <div class="wrap bar">
     <a class="brand" href="#"><img src="img/icon-colorful.png" alt="">Liftoff</a>
-    <a class="dl" href="https://github.com/dynxssy/liftoff/releases/latest/download/Liftoff.zip">Download</a>
+    <a class="dl" href="Liftoff.zip" download data-dl>Download</a>
   </div>
 </header>
 
@@ -83,7 +83,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     <h1 class="in" style="--d:.15s">Launchpad, back on your Mac.</h1>
     <p class="lede in" style="--d:.3s">All your apps on one screen, opened with the F4 key, a pinch or a hot corner. Just like before.</p>
     <div class="in" style="--d:.45s">
-      <a class="cta" href="https://github.com/dynxssy/liftoff/releases/latest/download/Liftoff.zip">Download for Mac</a>
+      <a class="cta" href="Liftoff.zip" download data-dl>Download for Mac</a>
       <p class="meta">Free · macOS 14 or later · 1 MB<span id="downloads"></span></p>
     </div>
   </div>
@@ -116,6 +116,9 @@ requestAnimationFrame(() => setTimeout(() => document.body.classList.add('ready'
 fetch('https://api.github.com/repos/dynxssy/liftoff/releases?per_page=100')
   .then(r => r.ok ? r.json() : [])
   .then(rel => {
+    // Once Liftoff.zip is attached to a release, download from there so it's counted.
+    const asset = rel.flatMap(r => r.assets).find(a => a.name === 'Liftoff.zip');
+    if (asset) document.querySelectorAll('[data-dl]').forEach(l => { l.href = 'https://github.com/dynxssy/liftoff/releases/latest/download/Liftoff.zip'; l.removeAttribute('download'); });
     const n = rel.reduce((t, r) => t + r.assets.reduce((u, a) => u + a.download_count, 0), 0);
     if (n > 0) document.getElementById('downloads').textContent = ' · ' + n.toLocaleString('en') + (n === 1 ? ' download' : ' downloads');
   }).catch(() => {});
